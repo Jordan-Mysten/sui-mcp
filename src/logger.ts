@@ -1,3 +1,4 @@
+import path from "node:path";
 import { pino } from "pino";
 import pretty from "pino-pretty";
 
@@ -10,7 +11,9 @@ export const logger = pino(
 			pretty({ destination: 2 }),
 			process.env.SUI_MCP_LOG_FILE !== "off"
 				? pino.destination({
-						dest: process.env.SUI_MCP_LOG_FILE,
+						dest:
+							process.env.SUI_MCP_LOG_FILE ||
+							path.join(import.meta.dirname, "sui-mcp.log"),
 						append: false,
 					})
 				: undefined,

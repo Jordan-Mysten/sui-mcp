@@ -1,8 +1,47 @@
-// TODO: Add resources, potentially docs but also potentially the compiled bytecode after a build.
-
 // import { registerResources, type Resource } from "muppet";
 // import { app } from "../server/app.js";
 
+import { type Resource, registerResources } from "muppet";
+import { logger } from "../logger.js";
+import { app } from "../server/app.js";
+
+app.post(
+	"/documents",
+	registerResources((c) => {
+		return c.json<Resource[]>([
+			{
+				type: "template",
+				uri: "walrus:{network}/blob/{blobId}",
+				name: "Walrus Blob (by blob ID)",
+				description:
+					"Load blob contents from the Walrus, fetched by the blob ID. Network must be one of 'mainnet' or 'testnet'.",
+				completion: async (args) => {
+					if (args.name === "network") {
+						return ["mainnet", "testnet"];
+					}
+
+					return [];
+				},
+			},
+			{
+				type: "template",
+				uri: "walrus:{network}/blob/by-object-id/{objectId}",
+				name: "Walrus Blob (by object ID)",
+				description:
+					"Load blob contents from the Walrus, fetched by the Sui Object ID. Network must be one of 'mainnet' or 'testnet'.",
+				completion: async (args) => {
+					if (args.name === "network") {
+						return ["mainnet", "testnet"];
+					}
+
+					return [];
+				},
+			},
+		]);
+	}),
+);
+
+// TODO: Add more resources:
 // app.post(
 //   "/documents",
 //   registerResources((c) =>
